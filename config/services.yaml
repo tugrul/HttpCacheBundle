@@ -1,0 +1,22 @@
+
+services:
+  tug_http_cache.provider.cache_key:
+    public: true
+    class: Tug\HttpCacheBundle\Provider\CacheKey
+
+  tug_http_cache.registry.routes:
+    public: true
+    class: Tug\HttpCacheBundle\Registry\Routes
+
+  Tug\HttpCacheBundle\EventListener\TugHttpCacheListener:
+    arguments:
+      $routes: '@Tug\HttpCacheBundle\Registry\RoutesInterface'
+      $cacheKey: '@Tug\HttpCacheBundle\Provider\CacheKeyInterface'
+      $cache: '@cache.tug_http_cache'
+      $cacheEnabled: '%env(bool:TUG_HTTP_CACHE_ENABLED)%'
+    tags: [ kernel.event_subscriber ]
+
+  Tug\HttpCacheBundle\Registry\RoutesInterface: '@tug_http_cache.registry.routes'
+
+  Tug\HttpCacheBundle\Provider\CacheKeyInterface: '@tug_http_cache.provider.cache_key'
+

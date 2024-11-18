@@ -1,0 +1,34 @@
+{
+  "name": "tugrul/http-cache-bundle",
+  "description": "symfony http cache bundle",
+  "minimum-stability": "stable",
+  "license": "proprietary",
+  "authors": [
+    {
+      "name": "Tuğrul Topuz",
+      "email": "tugrultopuz@gmail.com"
+    }
+  ],
+  "scripts": {
+    "test": "phpunit -v"
+  },
+  "require": {
+    "php": ">=8.1",
+    "symfony/framework-bundle": "^6.4",
+    "symfony/cache": "^6.4"
+  },
+  "autoload": {
+    "psr-4": {
+      "Tug\\HttpCacheBundle\\": "src/"
+    }
+  },
+  "autoload-dev": {
+    "psr-4": {
+      "Tug\\HttpCacheBundle\\Tests\\": "tests/"
+    }
+  },
+  "require-dev": {
+    "symfony/phpunit-bridge": "^6.4",
+    "phpunit/phpunit": "^9.5"
+  }
+}
