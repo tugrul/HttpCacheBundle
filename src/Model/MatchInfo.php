@@ -3,9 +3,8 @@
 namespace Tug\HttpCacheBundle\Model;
 
 use DateTimeInterface;
-use Exception;
 
-class MatchInfo implements \Serializable
+class MatchInfo
 {
     protected ?string $eTag;
 
@@ -38,40 +37,6 @@ class MatchInfo implements \Serializable
     {
         $this->modifiedDate = $modifiedDate;
         return $this;
-    }
-
-
-    public function serialize(): string
-    {
-        $parts = [ $this->getETag() ];
-
-        $modifiedDate = $this->getModifiedDate();
-
-        if ($modifiedDate !== null) {
-            $parts[] = $modifiedDate->getTimestamp();
-
-            $timezone = $modifiedDate->getTimezone();
-            if ($timezone !== false) {
-                $parts[] = $timezone->getName();
-            }
-        }
-
-        return implode(':', $parts);
-    }
-
-    /**
-     * @throws Exception
-     */
-    public function unserialize(string $data): void
-    {
-        list($eTag, $modifiedDate, $timezone) = explode(':', $data);
-
-        $this->setETag($eTag);
-
-        if (!empty($modifiedDate)) {
-            $this->setModifiedDate(\DateTimeImmutable::createFromFormat('U', $modifiedDate,
-                !empty($timezone) ? new \DateTimeZone($timezone) : null));
-        }
     }
 
     public function __serialize(): array

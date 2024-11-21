@@ -62,14 +62,18 @@ class Routes implements RoutesInterface
      *
      * We use request instead of route name because configuration can have multiple route names using different parameters.
      */
-    public function getRouteMatch(Request $request): ?RouteMatch
+    public function getRouteMatchByRequest(Request $request): ?RouteMatch
     {
         if (!$request->attributes->has('_route')) {
             return null;
         }
 
-        $routeName = $request->attributes->get('_route');
+        return $this->getRouteMatch($request->attributes->get('_route'),
+            $request->attributes->get('_route_params', []), $request->query->all());
+    }
 
+    public function getRouteMatch(string $routeName, array $routeParams = [], array $queryParams = []): ?RouteMatch
+    {
         /**
          * @var $item Route
          */
@@ -78,22 +82,22 @@ class Routes implements RoutesInterface
                 continue;
             }
 
-            $queryParams = $item->getAllowedQueryNames() ?? [];
+            $query = $item->getAllowedQueryNames() ?? [];
 
-            foreach ($request->query as $key => $value) {
+            foreach ($queryParams as $key => $value) {
                 // skip route configuration if the query name is not in allowed list
-                if (!array_key_exists($key, $queryParams)) {
+                if (!array_key_exists($key, $query)) {
                     continue 2;
                 }
 
                 // overwrite default query param value
-                $queryParams[$key] = $value;
+                $query[$key] = $value;
             }
 
             $ignoredParams = array_merge($this->ignoredParamNames, $item->getIgnoredParamNames() ?? []);
             $allowedParams = array_merge($this->allowedParamNames, $item->getAllowedParamNames() ?? []);
 
-            $routeParams = $request->attributes->get('_route_params', []);
+
 
             foreach ($routeParams as $key => $value) {
                 if (in_array($key, $ignoredParams, true)) {
@@ -107,9 +111,11 @@ class Routes implements RoutesInterface
                 $allowedParams[$key] = $value;
             }
 
-            return new RouteMatch($item, $queryParams, $allowedParams);
+            return new RouteMatch($item, $query, $allowedParams);
         }
 
         return null;
     }
+
+
 }

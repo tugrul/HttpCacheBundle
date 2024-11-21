@@ -4,6 +4,10 @@ services:
     public: true
     class: Tug\HttpCacheBundle\Provider\CacheKey
 
+  tug_http_cache.provider.match_info:
+    public: true
+    class: Tug\HttpCacheBundle\Provider\MatchInfo
+
   tug_http_cache.registry.routes:
     public: true
     class: Tug\HttpCacheBundle\Registry\Routes
@@ -19,4 +23,6 @@ services:
   Tug\HttpCacheBundle\Registry\RoutesInterface: '@tug_http_cache.registry.routes'
 
   Tug\HttpCacheBundle\Provider\CacheKeyInterface: '@tug_http_cache.provider.cache_key'
+
+  Tug\HttpCacheBundle\Provider\MatchInfoInterface: '@tug_http_cache.provider.match_info'
 

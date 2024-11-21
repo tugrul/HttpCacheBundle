@@ -13,5 +13,7 @@ interface RoutesInterface
 
     public function setDefaultIgnoredParamNames(array $paramNames);
 
-    public function getRouteMatch(Request $request): ?RouteMatch;
+    public function getRouteMatchByRequest(Request $request): ?RouteMatch;
+
+    public function getRouteMatch(string $routeName, array $routeParams = [], array $queryParams = []): ?RouteMatch;
 }
