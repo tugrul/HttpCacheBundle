@@ -4,13 +4,17 @@ services:
     public: true
     class: Tug\HttpCacheBundle\Provider\CacheKey
 
-  tug_http_cache.provider.match_info:
-    public: true
-    class: Tug\HttpCacheBundle\Provider\MatchInfo
-
   tug_http_cache.registry.routes:
     public: true
     class: Tug\HttpCacheBundle\Registry\Routes
+
+  tug_http_cache.provider.match_info:
+    public: true
+    arguments:
+      $routes: '@Tug\HttpCacheBundle\Registry\RoutesInterface'
+      $cacheKey: '@Tug\HttpCacheBundle\Provider\CacheKeyInterface'
+      $cache: '@cache.tug_http_cache'
+    class: Tug\HttpCacheBundle\Provider\MatchInfo
 
   Tug\HttpCacheBundle\EventListener\TugHttpCacheListener:
     arguments:
@@ -19,6 +23,11 @@ services:
       $cache: '@cache.tug_http_cache'
       $cacheEnabled: '%env(bool:TUG_HTTP_CACHE_ENABLED)%'
     tags: [ kernel.event_subscriber ]
+
+  Tug\HttpCacheBundle\Twig\TugHttpCacheExtension:
+    arguments:
+      $matchInfo: '@tug_http_cache.provider.match_info'
+    tags: [ twig.extension ]
 
   Tug\HttpCacheBundle\Registry\RoutesInterface: '@tug_http_cache.registry.routes'
 
