@@ -2,6 +2,7 @@
 
 namespace Tug\HttpCacheBundle\Model;
 
+use DateTimeImmutable;
 use DateTimeInterface;
 
 class MatchInfo
@@ -10,11 +11,11 @@ class MatchInfo
 
     protected ?DateTimeInterface $modifiedDate;
 
-    public function __construct(?string $eTag, ?DateTimeInterface $modifiedDate)
+    public function __construct(?string $eTag, ?DateTimeInterface $modifiedDate = null)
     {
         $this->eTag = $eTag;
 
-        $this->modifiedDate = $modifiedDate;
+        $this->modifiedDate = $modifiedDate ?? new DateTimeImmutable();
     }
 
     public function getETag(): ?string

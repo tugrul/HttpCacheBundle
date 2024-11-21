@@ -50,7 +50,7 @@ class TugHttpCacheListener implements EventSubscriberInterface
             return;
         }
 
-        $routeMatch = $this->routes->getRouteMatch($request);
+        $routeMatch = $this->routes->getRouteMatchByRequest($request);
 
         if (is_null($routeMatch)) {
             return;

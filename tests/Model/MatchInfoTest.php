@@ -14,6 +14,6 @@ class MatchInfoTest extends TestCase
 
         $this->assertNull($matchInfo->getETag());
 
-        $this->assertNull($matchInfo->getModifiedDate());
+        $this->assertNotNull($matchInfo->getModifiedDate());
     }
 }

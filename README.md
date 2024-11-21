@@ -32,7 +32,7 @@ composer require tugrul/http-cache-bundle
 First, define a cache pool for the bundle to store ETag and Last-Modified values:
 
 ```yaml
-# config/packages/framework.yaml
+# config/packages/cache.yaml
 
 framework:
   cache:
