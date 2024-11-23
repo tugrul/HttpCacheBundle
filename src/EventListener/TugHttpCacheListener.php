@@ -9,6 +9,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Event\RequestEvent;
 use Symfony\Component\HttpKernel\Event\ResponseEvent;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
+use Symfony\Component\HttpKernel\EventListener\AbstractSessionListener;
 use Tug\HttpCacheBundle\Model\MatchInfo;
 use Tug\HttpCacheBundle\Provider\CacheKeyInterface;
 use Tug\HttpCacheBundle\Registry\RoutesInterface;
@@ -82,6 +83,7 @@ class TugHttpCacheListener implements EventSubscriberInterface
         }
 
         $response = new Response();
+        $response->headers->set(AbstractSessionListener::NO_AUTO_CACHE_CONTROL_HEADER, 'true');
         $response->setEtag($eTag);
         $response->setLastModified($modifiedDate);
 
@@ -146,6 +148,7 @@ class TugHttpCacheListener implements EventSubscriberInterface
             $this->cache->save($cacheItem);
         }
 
+        $response->headers->set(AbstractSessionListener::NO_AUTO_CACHE_CONTROL_HEADER, 'true');
         $response->setLastModified($dateLastModified);
         $response->setEtag($eTag);
     }
