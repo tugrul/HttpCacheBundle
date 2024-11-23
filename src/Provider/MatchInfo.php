@@ -16,6 +16,8 @@ class MatchInfo implements MatchInfoInterface
 
     protected CacheItemPoolInterface $cache;
 
+    protected array $preparedMatchInfos = [];
+
     public function __construct(RoutesInterface $routes, CacheKeyInterface $cacheKey, CacheItemPoolInterface $cache)
     {
         $this->routes = $routes;
@@ -38,9 +40,13 @@ class MatchInfo implements MatchInfoInterface
 
         $cacheKey = $this->cacheKey->getCacheKey($routeMatch);
 
+        if (isset($this->preparedMatchInfos[$cacheKey])) {
+            return $this->preparedMatchInfos[$cacheKey];
+        }
+
         $cache = $this->cache->getItem($cacheKey);
 
-        return $cache->isHit() ? $cache->get() : null;
+        return $this->preparedMatchInfos[$cacheKey] = ($cache->isHit() ? $cache->get() : null);
     }
 
     /**
@@ -87,5 +93,33 @@ class MatchInfo implements MatchInfoInterface
         return false;
     }
 
+    /**
+     * @throws InvalidArgumentException
+     */
+    public function prepareMatchInfos(array $items): void
+    {
+        $cacheKeys = [];
+
+        foreach ($items as $item) {
+            if (empty($item['routeName'])) {
+                continue;
+            }
+
+            $routeMatch = $this->routes->getRouteMatch($item['routeName'],
+                $item['routeParams'] ?? [], $item['queryParams'] ?? []);
+
+            if (is_null($routeMatch)) {
+                continue;
+            }
+
+            $cacheKeys[] = $this->cacheKey->getCacheKey($routeMatch);
+        }
+
+        $items = $this->cache->getItems($cacheKeys);
+
+        foreach ($items as $key => $matchInfo) {
+            $this->preparedMatchInfos[$key] = $matchInfo->isHit() ? $matchInfo->get() : null;
+        }
+    }
 
 }

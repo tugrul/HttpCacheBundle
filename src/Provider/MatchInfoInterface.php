@@ -11,4 +11,6 @@ interface MatchInfoInterface
 
     public function setMatchInfoByRouteName(MatchInfo $matchInfo, string $routeName, array $routeParams = [],
                                             array $queryParams = []): bool;
+
+    public function prepareMatchInfos(array $items): void;
 }
