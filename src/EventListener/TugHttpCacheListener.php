@@ -139,10 +139,13 @@ class TugHttpCacheListener implements EventSubscriberInterface
             if (!is_null($matchInfoEtag) && ($matchInfoEtag === $eTag)) {
                 if (is_null($matchInfoModifiedDate)) {
                     $matchInfo->setModifiedDate($dateLastModified);
+                } else {
+                    $dateLastModified = $matchInfoModifiedDate;
                 }
             } else {
                 $matchInfo->setETag($eTag);
                 $matchInfo->setModifiedDate($dateLastModified);
+                $cacheItem->set($matchInfo);
             }
 
             $this->cache->save($cacheItem);
