@@ -113,8 +113,7 @@ class TugHttpCacheListener implements EventSubscriberInterface
         $response = $event->getResponse();
         $content = $response->getContent();
 
-        if (empty($content) || ($response->getStatusCode() !== Response::HTTP_OK)
-            || !$request->attributes->has('cache_store_id')) {
+        if (empty($content) || !$request->attributes->has('cache_store_id') || !$response->isCacheable()) {
             return;
         }
 
@@ -160,7 +159,7 @@ class TugHttpCacheListener implements EventSubscriberInterface
     {
         return [
             RequestEvent::class => 'onKernelRequest',
-            ResponseEvent::class => 'onKernelResponse',
+            ResponseEvent::class => ['onKernelResponse', -11],
         ];
     }
 }
